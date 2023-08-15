@@ -38,38 +38,37 @@ def QLearning(env, episode_n, noisy_episode_n, gamma=0.99, trajectory_len=500, a
             action = get_epsilon_greedy_action(Q[state], epsilon,
                                                action_n)  # Получаем действие с использованием epsilon-жадной стратегии
 
-            next_state, reward, done, _, _ = env.step(
-                action)  # Выполняем выбранное действие и получаем следующее состояние, вознаграждение и флаг завершения
+            next_state, reward, done, _, _ = env.step(action)  # Выполняем выбранное действие и получаем следующее состояние, вознаграждение и флаг завершения
             # next_action = get_epsilon_greedy_action(qfunction[next_state], epsilon, action_n)  # Получаем следующее действие с использованием epsilon-жадной стратегии
 
-            Q[state][action] += alpha * (reward + gamma * np.max(Q[next_state]) - Q[state][
-                action])  # Обновляем Q-функцию согласно формуле метода SARSA
+            Q[state][action] += alpha * (reward + gamma * np.max(Q[next_state]) - Q[state][action])  # Обновляем Q-функцию согласно формуле метода SARSA
 
             # state = next_state  # Переходим в следующее состояние
             # action = next_action  # Переходим в следующее действие
 
-            total_rewards[
-                episode] += reward  # Добавляем полученное вознаграждение к общему вознаграждению текущего эпизода
+            total_rewards[episode] += reward  # Добавляем полученное вознаграждение к общему вознаграждению текущего эпизода
 
             if done:  # Если эпизод завершился, выходим из цикла
                 break
 
             state = next_state
 
-        epsilon = max(0,
-                      epsilon - 1 / noisy_episode_n)  # Уменьшаем epsilon с течением времени для уменьшения исследования в пользу использования текущей стратегии
+        epsilon = max(0, epsilon - 1 / noisy_episode_n)  # Уменьшаем epsilon с течением времени для уменьшения исследования в пользу использования текущей стратегии
 
     return total_rewards, Q  # Возвращаем массив общих вознаграждений для каждого эпизода
+
 
 def main():
     env = gym.make("Taxi-v3", render_mode="rgb_array")
 
-    total_rewards, qfunction = QLearning(env, episode_n=1500, noisy_episode_n=1, trajectory_len=1000, gamma=0.999, alpha=0.5)
+    total_rewards, qfunction = QLearning(env, episode_n=1000, noisy_episode_n=1, trajectory_len=500, gamma=0.93, alpha=0.97)
     plt.plot(total_rewards)
     plt.savefig('q_learning.png')
 
-    print(np.mean(total_rewards[:-100]))
-    render_video(env, qfunction, video_title="q_learning", fps=2)
+    mean_reward = np.mean(total_rewards[:-100])
+    print(mean_reward)
+    if mean_reward > -40:
+        render_video(env, qfunction, video_title="q_learning", fps=2)
 
 
 if __name__ == '__main__':
