@@ -35,8 +35,7 @@ def QLearning(env, episode_n, noisy_episode_n, gamma=0.99, trajectory_len=500, a
         state = env.reset()[0]
 
         for _ in range(trajectory_len):  # Запускаем цикл для каждого шага внутри эпизода (ограниченного trajectory_len)
-            action = get_epsilon_greedy_action(Q[state], epsilon,
-                                               action_n)  # Получаем действие с использованием epsilon-жадной стратегии
+            action = get_epsilon_greedy_action(Q[state], epsilon, action_n)  # Получаем действие с использованием epsilon-жадной стратегии
 
             next_state, reward, done, _, _ = env.step(action)  # Выполняем выбранное действие и получаем следующее состояние, вознаграждение и флаг завершения
             # next_action = get_epsilon_greedy_action(qfunction[next_state], epsilon, action_n)  # Получаем следующее действие с использованием epsilon-жадной стратегии
